@@ -79,6 +79,7 @@
 	</platform>
 
 	<!-- IOS CONFIGURATION -->
+<!--
 	<platform name="ios">
 		<preference name="IOS_FIREBASE_MESSAGING_VERSION" default="~> 7.4.0" />
 		<config-file target="config.xml" parent="/*">
@@ -87,7 +88,6 @@
 			</feature>
 		</config-file>
 
-		<!-- ENABLE PUSH CAPABILITY -->
 		<config-file parent="aps-environment" target="*/Entitlements-Debug.plist">
 			<string>development</string>
 		</config-file>
@@ -117,7 +117,6 @@
 		<header-file src="src/ios/FCMNotificationCenterDelegate.h" />
 		<source-file src="src/ios/FCMNotificationCenterDelegate.m" />
 
-		<!-- FIREBASE COCOAPODS-->
 		<podspec>
 			<config>
                 <source url="https://github.com/CocoaPods/Specs.git"/>
@@ -126,7 +125,7 @@
 				<pod name="Firebase/Messaging" spec="$IOS_FIREBASE_MESSAGING_VERSION"/>
 			</pods>
 		</podspec>
-	</platform>
+	</platform> -->
 
 	<!-- COPY FCM CONFIG FILES TO PLATFORM BEFORE COMPILING -->
 	<hook src="scripts/copy_google_service_files.js" type="after_prepare" />
