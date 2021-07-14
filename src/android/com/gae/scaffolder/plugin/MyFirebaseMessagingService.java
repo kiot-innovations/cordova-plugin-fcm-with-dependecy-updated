@@ -20,6 +20,8 @@ import java.util.HashMap;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import io.kiot.MainActivity;
+
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FCMPlugin";
@@ -114,7 +116,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent =PendingIntent.getActivity(this,
                 requestCode,intent,PendingIntent.FLAG_ONE_SHOT);
         String channelId =  "alerts";
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        if(alarmSound == null){
+            alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            if(alarmSound == null){
+                alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            }
+        }
         NotificationCompat.Builder notificationBuilder;
         notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
@@ -122,7 +130,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         .setContentTitle(title)
                         .setContentText(body)
                         .setAutoCancel(true)
-                        // .setSound(defaultSoundUri)
+                         .setSound(alarmSound)
                         .setChannelId(channelId)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setContentIntent(pendingIntent);
