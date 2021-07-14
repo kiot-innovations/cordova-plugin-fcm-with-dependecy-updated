@@ -4,9 +4,16 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -36,6 +43,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // If the application is in the foreground handle both data and notification messages here.
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
+
         Log.d(TAG, "==> MyFirebaseMessagingService onMessageReceived");
         
         if(remoteMessage.getNotification() != null){
@@ -60,6 +68,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "\tNotification Data: " + data.toString());
         FCMPlugin.sendPushPayload(data);
         if(remoteMessage.getNotification() == null){
+            Log.d(TAG, "==> MyFirebaseMessagingService AddingToTray");
             addNotificationToTray(remoteMessage, data);
         }
     }
@@ -70,15 +79,32 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String body = data.get("body") != null ? data.get("body").toString() : null;;
 
         if(title == null && data.get("link") !=null){
-            // Trying to extract title from link (in case of tuya)
-            // TODO: Need to extract it from link.
-            // "link":"tuya://action?a=view&ct=You have a visitor&cc=Battery dootrbell ,someone is ringing the bell. &p={\"media\":13}&devId=d7237b993d524bae47liql&type=doorbell&msgId=d126710f1625217589&ts=1625217589000"
-            title = "Doorbell";
-            body = "Someone at doorbell";
+            // "link":"tuya://action?a=view&ct=You have a visitor&cc=Battery dootrbell ,someone is ringing the bell. &p={\"media\":13}&devId=d7237b993d524bae47liql&type=doorbell&msgId=d126710f1625217589&ts=1625217589000
+            String link = (String) data.get("link");
+            if (link.startsWith("tuya")) {
+                String[] pairs = link.split("&");
+                for (String pair : pairs) {
+                    String[] pairs2 = pair.split("=");
+                    if (pairs2[0].startsWith("cc")) {
+                        body = pairs2[1];
+                    }
+                    if (pairs2[0] == "ct") {
+                        title = pairs2[1];
+                    }
+                }
+                if (title == null || title.length() < 1) {
+                    title = "You have a visitor";
+                }
+                if (body == null || body.length() < 1) {
+                    body = "Someone is ringing your doorbell";
+                }
+            }
         }
         Intent intent = new Intent(this, FCMPluginActivity.class);
         intent.putExtra("title", title);
         intent.putExtra("body", body);
+        intent.putExtra("devId", (String) data.get("devId"));
+        intent.putExtra("openVideo", true);
         for (String key : data.keySet()) {
             Object value = data.get(key);
             intent.putExtra(key, value.toString());
