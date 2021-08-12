@@ -1,21 +1,16 @@
 package com.gae.scaffolder.plugin;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.media.AudioAttributes;
+import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import java.net.MalformedURLException;
@@ -25,6 +20,8 @@ import java.util.HashMap;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import io.kiot.MainActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -72,6 +69,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
         
         Log.d(TAG, "\tNotification Data: " + data.toString());
+        if (data.containsKey("custom")) {
+            sendNotificationToDelete(remoteMessage.getData().toString());
+            return;
+        }
         FCMPlugin.sendPushPayload(data);
         if(remoteMessage.getNotification() == null){
             Log.d(TAG, "==> MyFirebaseMessagingService AddingToTray");
@@ -79,6 +80,28 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
     // [END receive_message]
+
+    private void sendNotificationToDelete(String messageBody) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(_getResource("ic_launcher", "mipmap"))
+                .setContentTitle("TEST NOTIFICATION")
+                .setContentText(messageBody)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        int id = 0;
+        notificationManager.notify(id, notificationBuilder.build());
+        notificationManager.cancel(id);
+    }
 
     public void addNotificationToTray(RemoteMessage remoteMessage, Map<String, Object> data) {
         String title = data.get("title") != null ? data.get("title").toString() : null;
@@ -106,7 +129,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
             }
         }
-
         Intent intent = new Intent(this, FCMPluginActivity.class);
         intent.putExtra("title", title);
         intent.putExtra("body", body);
@@ -120,45 +142,31 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         int requestCode = 104; // random
         PendingIntent pendingIntent =PendingIntent.getActivity(this,
                 requestCode,intent,PendingIntent.FLAG_ONE_SHOT);
-        String channelId =  "10001";
-
-
-        AudioAttributes attributes = new AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_ALARM)
-                .build();
-        int resId = getResources().getIdentifier("doorbell", "raw", getApplicationContext().getPackageName());
-        Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ getApplicationContext().getPackageName() + "/" + resId);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(_getResource("ic_launcher", "mipmap"))
-                .setContentTitle(title)
-                .setSound(alarmSound)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentIntent(pendingIntent)
-                .setContentText(body);
-
-        NotificationManager mNotificationManager =
+        String channelId =  "alerts";
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        if(alarmSound == null){
+            alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            if(alarmSound == null){
+                alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            }
+        }
+        NotificationCompat.Builder notificationBuilder;
+        notificationBuilder =
+                new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(_getResource("ic_launcher", "mipmap"))
+                        .setContentTitle(title)
+                        .setContentText(body)
+                        .setAutoCancel(true)
+                         .setSound(alarmSound)
+                        .setChannelId(channelId)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent);
+                NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
 
-            NotificationChannel mChannel = new NotificationChannel(channelId,
-                    "Doorbell Alerts",
-                    NotificationManager.IMPORTANCE_HIGH);
-            mChannel.setDescription(body);
-            mChannel.enableLights(true);
-            mChannel.enableVibration(false);
-            mChannel.setSound(alarmSound, attributes); // This is IMPORTANT
-            mChannel.setLightColor(Color.RED );
-            mBuilder.setChannelId(channelId) ;
-            assert mNotificationManager != null;
-            mNotificationManager.createNotificationChannel(mChannel);
-        }
-
-        assert mNotificationManager != null;
-        mNotificationManager.notify(( int ) System. currentTimeMillis (), mBuilder.build());
-
-
+        notificationManager.notify(requestCode, notificationBuilder.build());
+        // [END receive_message]
     }
 
     private int _getResource(String name, String type) {
