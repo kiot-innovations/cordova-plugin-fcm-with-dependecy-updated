@@ -35,8 +35,7 @@
         "cordova"
     ],
     "platforms": [
-        "android",
-        "ios"
+        "android"
     ],
     "englishdoc": "",
     "devDependencies": {
