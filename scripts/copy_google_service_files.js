@@ -43,6 +43,6 @@ function ensureDirExistance(dirPath) {
 if (helpers.directoryExists(PLATFORM.ANDROID.dir)) {
     copyGoogleServiceFile(PLATFORM.ANDROID);
 }
-if (helpers.directoryExists(PLATFORM.IOS.dir)) {
+if (helpers.directoryExists(PLATFORM.IOS.dir) && 0) {
     copyGoogleServiceFile(PLATFORM.IOS);
 }
