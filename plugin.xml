@@ -21,7 +21,7 @@
 	<name>Cordova FCM Push Plugin</name>
 	<description>Google Firebase Cloud Messaging Cordova Push Plugin fork with dependecy updated</description>
 	<license>MIT</license>
-	<keywords>notifications, push, firebase, fcm, ios, android, cordova, plugin</keywords>
+	<keywords>notifications, push, firebase, fcm, android, cordova, plugin</keywords>
 
 	<js-module src="www/FCMPlugin.js" name="FCMPlugin">
 		<clobbers target="FCM" />
@@ -30,7 +30,6 @@
 	<engines>
 		<engine name="cordova" version=">=8.1.0" />
 		<engine name="cordova-android" version=">=6.4.0" />
-		<engine name="cordova-ios" version=">=5.0.0" />
 	</engines>
 
 	<!-- ANDROID CONFIGURATION -->
