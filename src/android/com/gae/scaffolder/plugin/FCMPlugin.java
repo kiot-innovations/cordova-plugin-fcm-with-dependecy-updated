@@ -3,6 +3,8 @@ package com.gae.scaffolder.plugin;
 import androidx.core.app.NotificationManagerCompat;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.gae.scaffolder.plugin.interfaces.*;
@@ -22,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class FCMPlugin extends CordovaPlugin {
@@ -54,6 +57,58 @@ public class FCMPlugin extends CordovaPlugin {
         }
 
         return instance;
+    }
+
+    @Override
+    public void onResume(boolean multitasking) {
+        Bundle intentExtras = cordova.getActivity().getIntent().getExtras();
+        handleIntent(intentExtras);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        handleIntent(intent.getExtras());
+    }
+
+    public void handleIntent(Bundle intentExtras) {
+        if(intentExtras == null) {
+            return;
+        }
+        Log.d(TAG, "==> USER TAPPED NOTIFICATION");
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("wasTapped", true);
+        for (String key : intentExtras.keySet()) {
+            Object value = intentExtras.get(key);
+            Log.d(TAG, "\tKey: " + key + " Value: " + value);
+            data.put(key, value);
+        }
+        if(!data.containsKey("title") && data.get("link") != null){
+            String title = "";
+            String body = "";
+            String link = (String) data.get("link");
+            if (link.startsWith("tuya")) {
+                String[] pairs = link.split("&");
+                for (String pair : pairs) {
+                    String[] pairs2 = pair.split("=");
+                    if (pairs2[0].startsWith("cc")) {
+                        body = pairs2[1];
+                    }
+                    if (pairs2[0].startsWith("ct")) {
+                        title = pairs2[1];
+                    }
+                }
+                if (title == null || title.length() < 1) {
+                    title = "Alert";
+                }
+                if (body == null || body.length() < 1) {
+                    body = "Someone is ringing your doorbell";
+                }
+                data.put("title", title);
+                data.put("body", body);
+            }
+        }
+        setInitialPushPayload(data);
+        sendPushPayload(data);
     }
 
     public static FCMPlugin getPlugin(FCMPlugin plugin) {
@@ -285,6 +340,7 @@ public class FCMPlugin extends CordovaPlugin {
 
     public static void setInitialPushPayload(Map<String, Object> payload) {
         if(initialPushPayload == null) {
+            Log.d(TAG, "getInitialPushPayload -> setting" + payload.toString());
             initialPushPayload = payload;
         }
     }
