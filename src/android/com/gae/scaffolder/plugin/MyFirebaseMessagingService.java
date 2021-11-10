@@ -73,9 +73,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             return;
         }
         FCMPlugin.sendPushPayload(data);
-        if(remoteMessage.getNotification() == null){
-            Log.d(TAG, "==> MyFirebaseMessagingService NOT AddingToTray, even though notification is null");
-//            addNotificationToTray(remoteMessage, data);
+        if(remoteMessage.getNotification() == null && data.get("msgType").equals("ac_doorbell")){
+            // Log.d(TAG, "==> MyFirebaseMessagingService NOT AddingToTray, even though notification is null");
+           addNotificationToTray(remoteMessage, data);
         }
     }
     // [END receive_message]
@@ -133,7 +133,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.putExtra("title", title);
         intent.putExtra("body", body);
         intent.putExtra("devId", (String) data.get("devId"));
-        intent.putExtra("openVideo", true);
+        intent.putExtra("openVideoAc", true);
         for (String key : data.keySet()) {
             Object value = data.get(key);
             intent.putExtra(key, value.toString());
@@ -142,7 +142,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         int requestCode = 104; // random
         PendingIntent pendingIntent =PendingIntent.getActivity(this,
                 requestCode,intent,PendingIntent.FLAG_ONE_SHOT);
-        String channelId =  "alerts";
+        String channelId =  "tuya_longbell";
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         if(alarmSound == null){
             alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
