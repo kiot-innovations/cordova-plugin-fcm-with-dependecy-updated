@@ -73,7 +73,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             return;
         }
         FCMPlugin.sendPushPayload(data);
-        if(remoteMessage.getNotification() == null && data.get("msgType").equals("ac_doorbell")){
+        if(remoteMessage.getNotification() == null && (data.get("msgType").equals("ac_doorbell") || data.get("msgType").equals("doorbell"))){
             // Log.d(TAG, "==> MyFirebaseMessagingService NOT AddingToTray, even though notification is null");
            addNotificationToTray(remoteMessage, data);
         }
