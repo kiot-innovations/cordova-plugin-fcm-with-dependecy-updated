@@ -71,7 +71,7 @@ FCM = __decorate(
     [
         Plugin({
             pluginName: 'FCM',
-            plugin: 'cordova-plugin-fcm-with-dependecy-updated',
+            plugin: 'kiot-cordova-plugin-fcm-with-dependecy-updated',
             pluginRef: 'FCM',
             repo: 'https://github.com/andrehtissot/cordova-plugin-fcm-with-dependecy-updated',
             platforms: ['Android', 'iOS']

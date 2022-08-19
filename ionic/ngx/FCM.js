@@ -68,7 +68,7 @@ FCM.prototype.unsubscribeFromTopic = function (topic) {
     return window.FCM.unsubscribeFromTopic(topic)
 }
 FCM.pluginName = 'FCM'
-FCM.plugin = 'cordova-plugin-fcm-with-dependecy-updated'
+FCM.plugin = 'kiot-cordova-plugin-fcm-with-dependecy-updated'
 FCM.pluginRef = 'FCM'
 FCM.repo = 'https://github.com/andrehtissot/cordova-plugin-fcm-with-dependecy-updated'
 FCM.platforms = ['Android', 'iOS']

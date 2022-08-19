@@ -4,12 +4,12 @@ buildscript {
         def ANDROID_GRADLE_TOOLS_VERSION = System.getenv('ANDROID_GRADLE_TOOLS_VERSION') ?: '4.1.0'
         try {
             // Load configuration from install variables (package.json) two directories above
-            def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../package.json").text).cordova.plugins['cordova-plugin-fcm-with-dependecy-updated']
+            def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../package.json").text).cordova.plugins['kiot-cordova-plugin-fcm-with-dependecy-updated']
             ANDROID_GRADLE_TOOLS_VERSION = PLUGIN_CONFIG.ANDROID_GRADLE_TOOLS_VERSION
         } catch(Exception e0) {
             try {
                 // Load configuration from install variables (package.json) three directories above
-                def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../../package.json").text).cordova.plugins['cordova-plugin-fcm-with-dependecy-updated']
+                def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../../package.json").text).cordova.plugins['kiot-cordova-plugin-fcm-with-dependecy-updated']
                 ANDROID_GRADLE_TOOLS_VERSION = PLUGIN_CONFIG.ANDROID_GRADLE_TOOLS_VERSION
             } catch(Exception e1) {
                 def WARNING_STYLE = "${(char)27}[33;49"+"m"
@@ -35,13 +35,13 @@ buildscript {
         def ANDROID_GRADLE_TOOLS_VERSION = System.getenv('ANDROID_GRADLE_TOOLS_VERSION') ?: '4.1.0'      
         try {
             // Load configuration from install variables (package.json) two directories above
-            def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../package.json").text).cordova.plugins['cordova-plugin-fcm-with-dependecy-updated']
+            def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../package.json").text).cordova.plugins['kiot-cordova-plugin-fcm-with-dependecy-updated']
             ANDROID_GOOGLE_SERVICES_VERSION = PLUGIN_CONFIG.ANDROID_GOOGLE_SERVICES_VERSION
             ANDROID_GRADLE_TOOLS_VERSION = PLUGIN_CONFIG.ANDROID_GRADLE_TOOLS_VERSION
         } catch(Exception e0) {
             try {
                 // Load configuration from install variables (package.json) three directories above
-                def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../../package.json").text).cordova.plugins['cordova-plugin-fcm-with-dependecy-updated']
+                def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../../package.json").text).cordova.plugins['kiot-cordova-plugin-fcm-with-dependecy-updated']
                 ANDROID_GOOGLE_SERVICES_VERSION = PLUGIN_CONFIG.ANDROID_GOOGLE_SERVICES_VERSION
                 ANDROID_GRADLE_TOOLS_VERSION = PLUGIN_CONFIG.ANDROID_GRADLE_TOOLS_VERSION
             } catch(Exception e1) {
@@ -71,13 +71,13 @@ dependencies {
     def ANDROID_FIREBASE_BOM_VERSION = System.getenv('ANDROID_FIREBASE_BOM_VERSION') ?: '26.0.0'
     try {
         // Load configuration from install variables (package.json) two directories above
-        def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../package.json").text).cordova.plugins['cordova-plugin-fcm-with-dependecy-updated']
+        def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../package.json").text).cordova.plugins['kiot-cordova-plugin-fcm-with-dependecy-updated']
         ANDROID_FCM_VERSION = PLUGIN_CONFIG.ANDROID_FCM_VERSION
         ANDROID_FIREBASE_BOM_VERSION = PLUGIN_CONFIG.ANDROID_FIREBASE_BOM_VERSION
     } catch(Exception e0) {
         try {
             // Load configuration from install variables (package.json) three directories above
-            def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../../package.json").text).cordova.plugins['cordova-plugin-fcm-with-dependecy-updated']
+            def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../../package.json").text).cordova.plugins['kiot-cordova-plugin-fcm-with-dependecy-updated']
             ANDROID_FCM_VERSION = PLUGIN_CONFIG.ANDROID_FCM_VERSION
             ANDROID_FIREBASE_BOM_VERSION = PLUGIN_CONFIG.ANDROID_FIREBASE_BOM_VERSION
         } catch(Exception e1) {
